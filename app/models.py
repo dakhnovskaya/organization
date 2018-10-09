@@ -22,19 +22,17 @@ class Company(RepresentationFieldNameMixin, models.Model):
     name = models.CharField(max_length=255, verbose_name='Название')
     description = models.CharField(max_length=500, verbose_name='Описание')
     enterprise_network = models.ForeignKey(EnterpriseNetwork, verbose_name='Сеть предприятий', on_delete=models.PROTECT)
+    district = models.ManyToManyField(District, verbose_name='Район города')
 
 
-class Item(RepresentationFieldNameMixin, models.Model):
+class Product(RepresentationFieldNameMixin, models.Model):
     name = models.CharField(max_length=255, verbose_name='Название')
     category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.PROTECT)
+    company = models.ManyToManyField(Company, through='CompanyProduct', verbose_name='Предприятие')
 
 
-class CompanyLinkDistrict(RepresentationFieldNameMixin, models.Model):
-    district = models.ForeignKey(District, verbose_name='Район города', on_delete=models.PROTECT)
-    company = models.ForeignKey(Company, verbose_name='Предприятие', on_delete=models.PROTECT)
-
-
-class ItemLinkCompany(RepresentationFieldNameMixin, models.Model):
-    item = models.ForeignKey(Item, verbose_name='Услуга\товар', on_delete=models.PROTECT)
-    company = models.ForeignKey(Company, verbose_name='Предприятие', on_delete=models.PROTECT)
+class CompanyProduct(RepresentationFieldNameMixin, models.Model):
+    company = models.ForeignKey(Company, verbose_name='Предприятие')
+    product = models.ForeignKey(Product, verbose_name='Услуга\товар')
     cost = models.FloatField(verbose_name='Цена')
+
