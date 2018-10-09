@@ -43,7 +43,7 @@ class Company(RepresentationFieldNameMixin, models.Model):
     name = models.CharField(max_length=255, verbose_name='Название')
     description = models.CharField(max_length=500, verbose_name='Описание')
     enterprise_network = models.ForeignKey(EnterpriseNetwork, verbose_name='Сеть предприятий', on_delete=models.PROTECT)
-    district = models.ManyToManyField(District, verbose_name='Район города')
+    districts = models.ManyToManyField(District, verbose_name='Район города')
     products = models.ManyToManyField(Product, through='CompanyProduct', verbose_name='Предприятие')
 
     class Meta:

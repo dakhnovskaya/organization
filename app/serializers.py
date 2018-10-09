@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from app.models import Category, Company, District, Item, CompanyLinkDistrict, EnterpriseNetwork, ItemLinkCompany
+
+from app.models import Product, Category, Company, District, EnterpriseNetwork
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -7,10 +9,12 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
 
 
-class CompanySerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
+    category = CategorySerializer()
+
     class Meta:
-        model = Company
-        fields = ('id', 'name')
+        model = Product
+        fields = ('id', 'name', 'category')
 
 
 class DistrictSerializer(serializers.ModelSerializer):
@@ -18,7 +22,18 @@ class DistrictSerializer(serializers.ModelSerializer):
         model = District
         fields = ('id', 'name')
 
-class ItemSerializer(serializers.ModelSerializer):
+
+class EnterpriseNetworkSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Item
-        fields = ('id', 'name', 'category')
+        model = EnterpriseNetwork
+        fields = ('id', 'name')
+
+
+class CompanySerializer(serializers.ModelSerializer):
+    enterprise_network = EnterpriseNetworkSerializer()
+    districts = DistrictSerializer(many=True)
+    products = ProductSerializer(many=True)
+
+    class Meta:
+        model = Company
+        fields = ('id', 'name', 'description', 'enterprise_network', 'districts', 'products')
